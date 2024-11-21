@@ -3,30 +3,40 @@ import os
 import sys
 import openai
 
-load_dotenv()
-
-def main():
+def load_api_key():   
     '''parse environment variable'''
+    load_dotenv()
+    
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         print("Missing API Key. Program aborted.")
         sys.exit(1)
     
+    return api_key
+
+
+def init_chatbot():
+    '''initialize chatbot name'''
     if len(sys.argv) < 2:
         print("Usage: Type in 'python chatbot.py <chatbot_name>'")
         sys.exit(1)
         
     chatbot_name = sys.argv[1]
-    openai.api_key = api_key
 
     chat = [
         {"role": "system", "content": f"You are a friendly assistant named {chatbot_name}."}
     ]
     
+    return chatbot_name, chat
+
+
+def run_chat_session(chatbot_name, chat, api_key):
+    '''run chatbot interaction'''
+    openai.api_key = api_key
     total_tokens_used = 0
     
     print(f"Hello, I'm you friendly assistant {chatbot_name}. How can I assist you today?")
-    print("(Press Ctrl+D to exit)")
+    print("(Press Ctrl+C to exit)")
     
     try:
         while True:
@@ -59,6 +69,12 @@ def main():
     except KeyboardInterrupt:
         print("\nBye!")
         print(f"Total tokens used: {total_tokens_used}.")
+
+
+def main():
+    api_key = load_api_key()
+    chatbot_name, chat = init_chatbot()
+    run_chat_session(chatbot_name, chat, api_key)
     
 
 if __name__ == "__main__":
