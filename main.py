@@ -41,7 +41,12 @@ def run_chat_session(chatbot_name, chat, api_key):
     try:
         while True:
             try:
-                user_input = input("You: ")
+                user_input = input("You: ").strip()
+                
+                if not user_input:
+                    print(f"{chatbot_name}: Please type in something so I can help you!")
+                else:
+                    return user_input
             
             except EOFError:
                 print("\nBye!")
